@@ -6,7 +6,7 @@ import subprocess
 
 def main():
     try:
-        subprocess.run(["python","--version"], shell=True, check=True)
+        subprocess.run(["python", "-m", "http.server", "8000"], shell=True, check=True)
     except Exception:
         return False
     return True
