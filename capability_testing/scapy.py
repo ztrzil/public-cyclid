@@ -14,7 +14,7 @@ def main(src_ip):
     """
 
     src_ip = src_ip
-    dest_ip = 160.36.58.191
+    dest_ip = "160.36.58.191"
     src_port = 10000
     dest_port = 20000
     payload = "testing erebus functionality"
