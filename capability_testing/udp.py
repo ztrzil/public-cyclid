@@ -10,6 +10,7 @@ def main():
 
     host = "erebus.eecs.utk.edu"
     port = 30001
+    MESSAGE = "Hello, World!"
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.sendto(MESSAGE, (host, port))
