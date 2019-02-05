@@ -1,4 +1,15 @@
 import json
+import ethereum
+import external
+import httpserver_80
+import httpserver_8000
+import mail
+import raw_sockets
+import shell
+import socks
+import tcp
+import udp
+import whoami
 
 json_file = 'resources/service_restrictions.json'
 scripts = ['tcp.py', 'udp.py', 'raw_sockets.py', 'shell.py', 'external.py',
@@ -20,62 +31,64 @@ def get_entry(d, uuid):
 def run_scripts(entry):
   if entry['TCP'] != 'N':
     print('Checking TCP...')
-    # call script with subproc.
+    tcp.main()
   else:
     print('Skipping TCP')
   if entry['UDP'] != 'N':
     print('Checking UDP...')
-    # call script with subproc.
+    udp.main()
   else:
     print('Skipping UDP')
   if entry['Raw Sockets/Forge Packets'] != 'N':
     print('Checking Raw Sockets/Forging Packets...')
-    # call script with subproc.
+    # call script from module
   else:
     print('Skipping Raw Sockets/Forging Packets')
   if entry['Output of `whoami`/`id`'] != 'N':
     print('Checking access to shell...')
-    # call script with subproc.
+    # call script from module
+    print('Checking output of `whoami`/`id`...')
+    # call script from module
   else:
     print('Skipping test for access to shell')
   if entry['Externally Reachable'] != 'N':
     print('Checking if externally reachable...')
-    # call script with subproc.
+    # call script from module
   else:
     print('Skipping check for external reachability')
   if entry['Host a Server'] != 'N':
     print('Checking ability to host a server on port 80...')
-    # call script with subproc.
+    # call script from module
     print('Checking ability to host a server on port 8000...')
-    # call script with subproc.
+    # call script from module
   else:
     print('Skipping test to host a server')
   if entry['Send Email'] != 'N':
     print('Checking if email can be sent...')
-    # call script with subproc.
+    # call script from module
   else:
     print('Skipping test to see if email can be sent')
   if entry['Seed Bittorrent File'] != 'N':
     print('Checking if torrent can be seeded...')
-    # call script with subproc.
+    # call script from module
   else:
     print('Skipping test to see if torrent can be seeded')
   if entry['Reach BTC P2P Network'] != 'N':
     print('Attempting to reach BTC P2P network...')
-    # call script with subproc.
+    # call script from module
   else:
     print('Skipping test to reach BTC P2P network')
   if entry['Reach ETH P2P Network'] != 'N':
     print('Attempting to reach ETH P2P network...')
-    # call script with subproc.
+    # call script from module
   else:
     print('Skipping test to reach ETH P2P network')
   if entry['Run SOCKS Proxy'] != 'N':
     print('Attempting to run SOCKS Proxy...')
-    # call script with subproc.
+    # call script from module
   else:
     print('Skipping test to run SOCKS Proxy')
-    # call script with subproc.
+    # call script from module
   if entry['Scanning'] != 'N':
     pass
 
@@ -96,7 +109,6 @@ def select_scripts(d):
     return
 
   run_scripts(entry)
-
 
 
 d = read_file(json_file)
