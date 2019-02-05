@@ -5,7 +5,7 @@ import external
 import httpserver_80
 import httpserver_8000
 import mail
-#import raw_sockets
+import raw_sockets
 import shell
 import socks
 import tcp
