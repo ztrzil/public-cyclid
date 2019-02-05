@@ -1,6 +1,6 @@
 # making change for commit to trigger build
 import json
-import ethereum
+#import ethereum
 import external
 import httpserver_80
 import httpserver_8000
