@@ -31,12 +31,14 @@ def get_entry(d, uuid):
 def run_scripts(entry):
   if entry['TCP'] != 'N':
     print('Checking TCP...')
-    tcp.main()
+    rv = tcp.main()
+    print('TCP test returned ' + str(rv))
   else:
     print('Skipping TCP')
   if entry['UDP'] != 'N':
     print('Checking UDP...')
-    udp.main()
+    rv = udp.main()
+    print('UDP test returned ' + str(rv))
   else:
     print('Skipping UDP')
   if entry['Raw Sockets/Forge Packets'] != 'N':
