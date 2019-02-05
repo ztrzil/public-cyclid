@@ -6,7 +6,7 @@ import subprocess
 
 def main():
     try:
-        subprocess.run(["python","--version"], shell=True, check=True)
+        subprocess.run(["python","--version"], shell=True, check=True, timeout=5)
     except Exception:
         return False
     return True
