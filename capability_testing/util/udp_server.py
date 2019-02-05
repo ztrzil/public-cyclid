@@ -18,7 +18,7 @@ def main():
     while True:
         data, addr = sock.recvfrom(1024)
         print("Received message: {}".format(data))
-        sock.sendto(data, (host, port))
+        sock.sendto(data, addr)
 
     sock.close()
 
