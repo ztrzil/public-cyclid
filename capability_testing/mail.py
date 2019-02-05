@@ -6,6 +6,7 @@ import uuid
 
 def main():
     try:
+        # send an email with a unique ID (to ourselves)
         user = 'utkvolsec@gmail.com'
         password = 'VRxWKjWV9ixtB3WEq8aYz3B3uDPzg'
         server = smtplib.SMTP('smtp.gmail.com', 587)
@@ -17,6 +18,7 @@ def main():
         server.sendmail(user, send_to, msg)
         server.quit()
 
+        # check our email - do we have one with the above ID?
         mail = imaplib.IMAP4_SSL('imap.gmail.com', 993)
         mail.login(user, password)
         mail.list()
