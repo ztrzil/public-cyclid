@@ -13,7 +13,7 @@ def main():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.settimeout(10)
     s.connect((host, port))
-    s.sendall('Hello, world')
+    s.sendall(b'Hello, world')
 
     while True:
         try:
