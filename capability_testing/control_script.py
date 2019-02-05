@@ -95,7 +95,7 @@ def run_scripts(entry):
     pass
 
 
-def select_scripts(d):
+def interactive_select_scripts(d):
   uuid = input('Input the UUID of the service being tested: ')
   try:
     int(uuid)
@@ -113,5 +113,25 @@ def select_scripts(d):
   run_scripts(entry)
 
 
+def from_file_select_scripts(d, filename):
+  with open(filename, 'r') as fp:
+    uuid = fp.readline().strip('\n')
+  try:
+    int(uuid)
+  except:
+    print('Expected integer input corresponding to the UUID of the service \
+    being tested. Refer to the Cyclid Google Sheet for a mapping of UUIDs to \
+    service')
+    return
+  entry = get_entry(d, uuid)
+  if entry == None:
+    print('Failed to find entry for the entered UUID. Refer to the Cyclid \
+    Google Sheet for a mapping of UUIDs to service.')
+    return
+
+  run_scripts(entry)
+
+
+
 d = read_file(json_file)
-select_scripts(d)
+from_file_select_scripts(d, 'uuid.txt')
