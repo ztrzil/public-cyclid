@@ -5,15 +5,20 @@ import subprocess
 
 
 def main():
-    p = subprocess.Popen("python", shell=True)
+    p = subprocess.Popen("python test_shell.py", shell=True)
     try:
-        #subprocess.run(["python","--version"], shell=True, check=True)
-        out, err = p.communicate('--version', timeout=10)
-        out, err = p.communicate('exit()', timeout=10)
+        out, err = p.communicate()
+        if out != None or err != None:
+            print(out, err)
+        status = p.wait()
+        print('Shell exited with status {}'.format(status))
     except Exception:
         return False
-    return True
+    if status == 0:
+        return True
+    return False
 
 
 if __name__ == '__main__':
-    main()
+  rv = main()
+  print(rv)
