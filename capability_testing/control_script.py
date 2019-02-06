@@ -180,6 +180,11 @@ def interactive_select_scripts(d):
     Google Sheet for a mapping of UUIDs to service.')
     return
 
+  # sanity check
+  if entry['Can Use'] == "N":
+    print('Restricted Service! Aborting. . .')
+    return
+  print_details(entry)
   run_scripts(entry)
 
 
@@ -197,6 +202,11 @@ def from_file_select_scripts(d, filename):
   if entry == None:
     print('Failed to find entry for the entered UUID. Refer to the Cyclid \
     Google Sheet for a mapping of UUIDs to service.')
+    return
+
+  # sanity check
+  if entry['Can Use'] == "N":
+    print('Restricted Service! Aborting. . .')
     return
 
   print_details(entry)
