@@ -1,3 +1,4 @@
+import sys
 import json
 import ethereum
 import external
@@ -11,8 +12,6 @@ import tcp
 import udp
 import whoami
 
-import install_dependencies
-
 json_file = 'resources/service_restrictions.json'
 
 def read_file(filename):
@@ -25,6 +24,9 @@ def get_entry(d, uuid):
     if entry['UUID'] == uuid:
       return entry
   return None
+
+def get_version():
+  return sys.version[0:1]
 
 def print_details(entry):
   print('Running scripts for ', entry['Service Name'])
@@ -215,6 +217,5 @@ def from_file_select_scripts(d, filename):
   run_scripts(entry)
 
 
-install_dependencies.main()
 d = read_file(json_file)
 from_file_select_scripts(d, 'uuid.txt')
