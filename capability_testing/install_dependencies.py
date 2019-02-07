@@ -6,7 +6,7 @@ import subprocess
 
 def install_dependencies():
   print('Installing dependencies. . .')
-  p = subprocess.Popen("pip2 install coinbits", shell=True,
+  p = subprocess.Popen("python2 -m pip install coinbits", shell=True,
       stdout=subprocess.PIPE)
   out, err = p.communicate()
   if out != None:
