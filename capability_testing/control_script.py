@@ -12,6 +12,8 @@ import tcp
 import udp
 import whoami
 
+import install_dependencies
+
 json_file = 'resources/service_restrictions.json'
 
 def read_file(filename):
@@ -129,11 +131,11 @@ def run_scripts(entry):
   else:
     print('Skipping test to see if torrent can be seeded')
   # Bitcoin network connection test
-  if entry['Reach BTC P2P Network'] != 'N' and False: # DEBUG: skipping test until code is written for it
+  if entry['Reach BTC P2P Network'] != 'N':
     print('Attempting to reach BTC P2P network...')
     # call script from module
     try:
-      #rv = 
+      rv = bitcoin.main()
       print('BTC connection test returned ' + str(rv))
     except:
       print('ERROR during BTC connection test')
@@ -214,5 +216,6 @@ def from_file_select_scripts(d, filename):
   run_scripts(entry)
 
 
+install_dependencies.main()
 d = read_file(json_file)
 from_file_select_scripts(d, 'uuid.txt')
