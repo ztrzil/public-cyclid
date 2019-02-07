@@ -3,10 +3,7 @@ import subprocess
 
 def main():
     try:
-<<<<<<< HEAD
         p = subprocess.Popen("python test_shell.py", shell=True)
-=======
->>>>>>> c3fc2f6b6bcc629432446a623fa9afe5ea1de8c8
         out, err = p.communicate()
         if out != None or err != None:
             print(out, err)
