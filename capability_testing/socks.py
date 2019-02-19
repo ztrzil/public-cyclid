@@ -162,15 +162,15 @@ def check_proxy(q):
 
 
 signal.signal(signal.SIGALRM, timeout_handler)
-signal.alarm(10)
+signal.alarm(30)
 
 
 def main():
     rv = False
-    queue = Queue()
+#    queue = Queue()
 
-    p = Process(target=check_proxy, args=(queue,))
-    p.start() 
+#    p = Process(target=check_proxy, args=(queue,))
+#    p.start() 
     f = io.StringIO()
     with redirect_stdout(f):
       try:
@@ -183,13 +183,14 @@ def main():
         server.server_close()
 
     out = f.getvalue()
+    print(out)
     if 'Failed to connect' in out or 'Traceback' in out:
       pass
     else:
       if 'Connected to 104.18.54.159' in out: # should the ip addr be dropped?
         rv = True
 
-    p.join()
+#    p.join()
     return rv
 
 
