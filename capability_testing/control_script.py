@@ -1,6 +1,9 @@
 import sys
 import json
-import ethereum
+try:
+  import ethereum
+except:
+  pass
 import external
 import httpserver_80
 import httpserver_8000
