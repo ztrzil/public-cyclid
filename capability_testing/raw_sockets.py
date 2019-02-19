@@ -1,10 +1,9 @@
 #!/usr/bin/env
-
-
 from scapy.all import *
+import time
 
 
-def main(src_ip):
+def main(src_ip, src_port=10000):
     """
         Goals:
 
@@ -15,13 +14,20 @@ def main(src_ip):
 
     src_ip = src_ip
     dest_ip = "160.36.58.191"
-    src_port = 10000
     dest_port = 20000
-    payload = "testing erebus functionality"
+    payload = "testing raw sockets. Sending from IP addr " + src_ip
 
-    spf_packet = IP(src=src_ip, dst=dest_ip) / TCP(sport=src_port, dport=dest_port) / payload
+    spf_packet = IP(src=src_ip, dst=dest_ip) / TCP(sport=src_port, dport=dest_port) / Raw(load=payload)
     send(spf_packet)
 
 
 if __name__ == '__main__':
-    main()
+  src_ip_diff_block = ''
+  src_ip_same_block = ''
+  src_ip_reserved_r = '240.240.240.1'
+  src_ip_diff_block = '54.239.98.122'
+  src_ip_local_mach = '127.0.0.1'
+
+  main(src_ip_diff_block, 10000)
+  time.sleep(1)
+  main(src_ip_local_mach, 12000)

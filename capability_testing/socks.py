@@ -5,6 +5,13 @@ import logging
 import select
 import socket
 import struct
+import signal
+import subprocess
+import sys
+import io
+
+from contextlib import redirect_stdout
+from multiprocessing import Process, Queue
 from socketserver import ThreadingMixIn, TCPServer, StreamRequestHandler
 
 
@@ -22,6 +29,7 @@ class SocksProxy(StreamRequestHandler):
 
     def handle(self):
         logging.info('Accepting connection from %s:%s' % self.client_address)
+        print('Accepting connection from %s:%s' % self.client_address)
 
         # greeting header
         # read and unpack 2 bytes from a client
@@ -66,6 +74,8 @@ class SocksProxy(StreamRequestHandler):
                 remote.connect((address, port))
                 bind_address = remote.getsockname()
                 logging.info('Connected to %s %s' % (address, port))
+                print('Connected to %s %s' % (address, port))
+                sys.stdout.flush()
             else:
                 self.server.close_request(self.request)
 
@@ -136,10 +146,53 @@ class SocksProxy(StreamRequestHandler):
                     break
 
 
+def timeout_handler(num, stack):
+    raise socket.timeout
+
+
+def check_proxy(q):
+  try:
+    p = subprocess.Popen("curl -v --socks5 localhost:9011 -U volsec:embracethelight https://volsec.org/",
+        shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    out, err = p.communicate(timeout=10)
+  except Exception as e:
+    print(e)
+    print("Failed to connect!")
+    p.kill()
+
+
+signal.signal(signal.SIGALRM, timeout_handler)
+signal.alarm(30)
+
 
 def main():
-    with ThreadingTCPServer(('0.0.0.0', 9011), SocksProxy) as server:
-        server.serve_forever()
+    rv = False
+#    queue = Queue()
+
+#    p = Process(target=check_proxy, args=(queue,))
+#    p.start() 
+    f = io.StringIO()
+    with redirect_stdout(f):
+      try:
+          with ThreadingTCPServer(('0.0.0.0', 9011), SocksProxy) as server:
+              server.serve_forever()
+      except socket.timeout:
+        print("Shutting down SOCKS proxy")
+      finally:
+        server.shutdown()
+        server.server_close()
+
+    out = f.getvalue()
+    print(out)
+    if 'Failed to connect' in out or 'Traceback' in out:
+      pass
+    else:
+      if 'Connected to 104.18.54.159' in out: # should the ip addr be dropped?
+        rv = True
+
+#    p.join()
+    return rv
+
 
 
 if __name__ == '__main__':
