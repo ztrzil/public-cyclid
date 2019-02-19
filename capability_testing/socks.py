@@ -167,7 +167,6 @@ signal.alarm(30)
 
 def main():
     rv = False
-#    queue = Queue()
 
 #    p = Process(target=check_proxy, args=(queue,))
 #    p.start() 
