@@ -1,7 +1,7 @@
 #!/usr/bin/env
 
 
-from scapy.all import *
+from scapyimport *
 
 
 def main(src_ip):

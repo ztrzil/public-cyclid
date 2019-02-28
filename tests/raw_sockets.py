@@ -1,5 +1,5 @@
 #!/usr/bin/env
-from scapy.all import *
+from scapy import *
 import time
 
 
