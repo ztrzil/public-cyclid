@@ -1,38 +1,100 @@
-from coinbits.client import BitcoinClient
-from coinbits.protocol.serializers import GetBlocks
+import socket
+import struct
+import traceback
+import time
+import random
+import hashlib
+import binascii
+import traceback
 
-connection_success = False
+from multiprocessing import Pool
 
-class MyClient(BitcoinClient):
-    def message_received(self, message_header, message):
-        print ("Got a message:", message_header.command, message)
-        super(MyClient, self).message_received(message_header, message)
+PORT = 8333
 
-    def send_message(self, message):
-        print ("Sending a message:", str(message))
-        super(MyClient, self).send_message(message)
+dns_seeds = [
+    'seed.bitcoin.sipa.be',
+    'dnsseed.bluematt.me',
+    'dnsseed.bitcoin.dashjr.org',
+    'seed.bitcoinstats.com',
+    'seed.bitcoin.jonasschnelli.ch',
+    'seed.btc.petertodd.org',
+]
 
-    def connected(self):
-        global connection_success
-        hash = int('00000000000000000f69e991ee47a3536770f5d452967ec7edeb8d8cb28f9f28', 16)
-        gh = GetBlocks([hash])
-        self.send_message(gh)
-        connection_success = True
+def get_peers():
+    peers = []
+    for seed in dns_seeds:
+        peers += socket.gethostbyname_ex(seed)[2]
+    return peers
 
-    def handle_inv(self, message_header, message):
-        print ("Got some inventory:", message)
+def net_addr(services, ip, port):
+    if type(ip) == str:
+        ip = ip.encode('utf-8')
+    services = struct.pack('<Q', services)
+    ip = (b'\x00'*10) + b'\xff\xff' + bytes(int(b) for b in ip.split(b'.'))
+    port = struct.pack('>H', port)
 
+    return services + ip + port
+
+
+def version_msg(to_ip):
+    PROTO_VERSION = 70015;
+    NODE_NETWORK = 1
+    timestamp = int(time.time())
+
+    proto_version = struct.pack('<i', PROTO_VERSION)
+    services = struct.pack('<Q', 0x40d)
+    timestamp = struct.pack('<Q', timestamp)
+
+    addr_recv = net_addr(0x43f, to_ip, PORT)
+    addr_from = services + b'\x00'*18
+
+    nonce = struct.pack('<Q', random.randint(0, 2**64))
+    user_agent = b'\x10/Satoshi:0.16.2/'
+    start_height = struct.pack('<i', 551720)
+    relay = b'\x01'
+
+    version_msg = b''.join([
+        proto_version,
+        services,
+        timestamp,
+        addr_recv,
+        addr_from,
+        nonce,
+        user_agent,
+        start_height,
+        relay,
+    ])
+
+    return version_msg
+
+def add_header(payload):
+    magic = struct.pack('<I', 0xD9B4BEF9)
+    command = b'version\x00\x00\x00\x00\x00'
+    payload_len = struct.pack('<I', len(payload))
+    checksum = hashlib.sha256(hashlib.sha256(payload).digest()).digest()[:4]
+    return magic + command + payload_len + checksum + payload
+
+def try_peer(peer):
+    payload = version_msg(peer)
+    msg = add_header(payload)
+
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(0.5)
+        sock.connect((peer, PORT))
+        sock.send(msg)
+        sock.recv(1024)
+    except:
+        return False
+    return True
+    
 
 def main():
-  global connection_success
-
-  # Connect to bitcoin network
-  try:
-    MyClient("bitcoin.sipa.be").loop()
-  except Exception as e:
-    print(e)
-
-  return connection_success
+    peers = get_peers()
+    with Pool(processes=32) as pool:
+        results = (pool.map(try_peer, peers))
+    rate = results.count(True) / len(results)
+    print('peer connect success rate: {}'.format(rate))
 
 
 if __name__ == '__main__':
