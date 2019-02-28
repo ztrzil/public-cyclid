@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 import socket
-import urllib.request
+import requests
 
 
 def main():
-
-    external_ip = urllib.request.urlopen('https://ident.me').read().decode('utf8')
+    external_ip = requests.get('https://ident.me').content
     print("ip from web service: {}".format(external_ip))
     infos = socket.getaddrinfo(socket.gethostname(), None)
     for info in infos:

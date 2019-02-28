@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import subprocess
 import time
-import urllib.request
+import requests
 
 
 def main():
@@ -11,7 +11,7 @@ def main():
     try:
         p = subprocess.Popen("python -m http.server 80", shell=True)
         time.sleep(1)
-        contents = urllib.request.urlopen('http://0.0.0.0:80').read()
+        contents = requests.get('http://127.0.0.1:80').content
         print(contents)
         out, err = p.communicate(timeout=3)
         print(out, err) # this line should never print
