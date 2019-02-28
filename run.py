@@ -2,10 +2,15 @@ import importlib
 import json
 import os
 import subprocess
+import shlex
 import sys
 import traceback
 
 
+def save_environment():
+    with open('userenv', 'w') as f:
+        for name, val in os.environ.items():
+            f.write('{}={}\n'.format(name, shlex.quote(val)))
 
 def load_service(uuid):
     with open('services.json') as services_file:
@@ -26,9 +31,12 @@ def try_sudo():
     if os.getuid() != 0:
         print("I am not root. Trying to re-run myself with sudo...")
         if can_sudo():
+            save_environment()
+
             # append the argument 'no_try_sudo' to prevent any possible loops...
-            args = ['sudo', 'python', __file__] + sys.argv[1:] + ['no_try_sudo']
-            subprocess.call(args)
+            python_args = ['python', __file__] + sys.argv[1:] + ['no_try_sudo']
+            wrapper_args = ['sudo', 'bash', 'run_with_userenv.sh'] + python_args
+            subprocess.call(wrapper_args)
             sys.exit(0)
         else:
             print("Unable to use sudo. Falling back to non-privileged execution.")
@@ -39,6 +47,7 @@ def try_sudo():
 
 
 def main():
+    print('running in python ' + sys.version)
     if 'no_try_sudo' not in sys.argv:
         try_sudo()
 
