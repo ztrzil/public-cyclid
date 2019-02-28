@@ -27,7 +27,7 @@ def try_sudo():
         print("I am not root. Trying to re-run myself with sudo...")
         if can_sudo():
             # append the argument 'no_try_sudo' to prevent any possible loops...
-            args = ['sudo', 'python', __file__] + sys.argv[1] + ['no_try_sudo']
+            args = ['sudo', 'python', __file__] + sys.argv[1:] + ['no_try_sudo']
             subprocess.call(args)
             sys.exit(0)
         else:
