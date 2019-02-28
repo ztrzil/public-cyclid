@@ -29,8 +29,8 @@ def main():
   # Connect to bitcoin network
   try:
     MyClient("bitcoin.sipa.be").loop()
-  except:
-    pass
+  except Exception as e:
+    print(e)
 
   return connection_success
 
