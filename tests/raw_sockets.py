@@ -28,6 +28,13 @@ if __name__ == '__main__':
   src_ip_diff_block = '54.239.98.122'
   src_ip_local_mach = '127.0.0.1'
 
-  main(src_ip_diff_block, 10000)
+  try:
+    main(src_ip_diff_block, 10000)
+  except Exception as e:
+    print(e)
+
   time.sleep(1)
-  main(src_ip_local_mach, 12000)
+  try:
+    main(src_ip_local_mach, 12000)
+  except Exception as e:
+    print(e)
