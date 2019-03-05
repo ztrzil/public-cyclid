@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
 import socket
+import logging
 
+logger = logging.getLogger(__name__)
 
 def main():
     """
@@ -23,6 +25,7 @@ def main():
             return False
         if data:
             print('Received: {}'.format(repr(data)))
+            logger.info('Received: {}'.format(repr(data)))
             s.close()
             return True
 

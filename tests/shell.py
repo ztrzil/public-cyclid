@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 import subprocess
+import logging 
+
+logger = logging.getLogger(__name__)
 
 def main():
     try:
@@ -9,7 +12,9 @@ def main():
             print(out, err)
         status = p.wait()
         print('Shell exited with status {}'.format(status))
-    except Exception:
+        logging.info('Shell exited with status {}'.format(status))
+    except Exception as e:
+        logging.warning(e)
         return False
     if status == 0:
         return True
@@ -17,5 +22,4 @@ def main():
 
 
 if __name__ == '__main__':
-  rv = main()
-  print(rv)
+  main()

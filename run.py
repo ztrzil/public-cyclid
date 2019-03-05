@@ -5,7 +5,16 @@ import subprocess
 import shlex
 import sys
 import traceback
+import logging
+import logging.handlers
 
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO, format='%(name)s - %(levelname)s - %(message)s')
+
+http_handler = logging.handlers.HTTPHandler('erebus.eecs.utk.edu:9000',
+    '/opt/cyclid/log', method='POST')
+
+logger.addHandler(http_handler)
 
 def save_environment():
     with open('userenv', 'w') as f:
@@ -40,9 +49,11 @@ def try_sudo():
             sys.exit(0)
         else:
             print("Unable to use sudo. Falling back to non-privileged execution.")
+            logger.info("Unable to use sudo. Falling back to non-privileged execution.")
             return False
     else:
         print("I am already root!")
+        logger.info("I am already root!")
         return True
 
 
@@ -62,15 +73,22 @@ def main():
         sys.stderr.write("service {} not found.".format(uuid))
         sys.exit(1)
 
+    logger.info('Running tests for service: {} ({})'.format(service['name'], service['uuid']))
     for test in service['tests']:
         print('Running test {}'.format(test))
+        logging.info('Running test {}'.format(test))
         try:
             test_module = importlib.import_module('tests.{}'.format(test))
-            test_module.main()
-        except:
+            rv = test_module.main()
+            print("{} test returned {}".format(test, rv))
+            logger.info("{} test returned {}".format(test, rv))
+        except Exception as e:
             print('Error running test {}:'.format(test))
             traceback.print_exc()
+            logger.warning('Error running test {}:'.format(test))
+            logger.warning(e)
 
+    logger.info('Finished testing for service: {} ({})'.format(service['name'], service['uuid']))
 if __name__ == '__main__':
     main()
 
