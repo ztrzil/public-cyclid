@@ -6,7 +6,7 @@ import shlex
 import sys
 import traceback
 
-# re-testing codeship
+# testing shippable 
 
 def save_environment():
     with open('userenv', 'w') as f:
