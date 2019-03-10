@@ -67,7 +67,8 @@ def main():
         print('Running test {}'.format(test))
         try:
             test_module = importlib.import_module('tests.{}'.format(test))
-            test_module.main()
+            rv = test_module.main()
+            print('{} test returned {}'.format(test, rv))
         except:
             print('Error running test {}:'.format(test))
             traceback.print_exc()
