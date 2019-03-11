@@ -14,7 +14,7 @@ def forge_packet(src_ip, src_port=10000):
 
     src_ip = src_ip
     dest_ip = "160.36.58.191"
-    dest_port = 30000
+    dest_port = 30001
     payload = "testing raw sockets. Sending from IP addr " + src_ip
 
     spf_packet = IP(src=src_ip, dst=dest_ip) / TCP(sport=src_port, dport=dest_port) / Raw(load=payload)
