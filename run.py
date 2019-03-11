@@ -80,24 +80,16 @@ def main():
         try:
             test_module = importlib.import_module('tests.{}'.format(test))
             rv = test_module.main()
-<<<<<<< HEAD
-            print('{} test returned {}'.format(test, rv))
-        except:
-=======
             print("{} test returned {}".format(test, rv))
             logger.info("{} test returned {}".format(test, rv))
         except Exception as e:
->>>>>>> b001a9448ca12e5b2862468e0656852f7f2dc84b
             print('Error running test {}:'.format(test))
             traceback.print_exc()
             logger.warning('Error running test {}:'.format(test))
             logger.warning(e)
 
-<<<<<<< HEAD
-
-=======
     logger.info('Finished testing for service: {} ({})'.format(service['name'], service['uuid']))
->>>>>>> b001a9448ca12e5b2862468e0656852f7f2dc84b
 if __name__ == '__main__':
     main()
+
 
