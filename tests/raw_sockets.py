@@ -3,7 +3,7 @@ from scapy import *
 import time
 
 
-def main(src_ip, src_port=10000):
+def forge_packet(src_ip, src_port=10000):
     """
         Goals:
 
@@ -14,14 +14,14 @@ def main(src_ip, src_port=10000):
 
     src_ip = src_ip
     dest_ip = "160.36.58.191"
-    dest_port = 20000
+    dest_port = 30000
     payload = "testing raw sockets. Sending from IP addr " + src_ip
 
     spf_packet = IP(src=src_ip, dst=dest_ip) / TCP(sport=src_port, dport=dest_port) / Raw(load=payload)
     send(spf_packet)
 
 
-if __name__ == '__main__':
+def main():
   src_ip_diff_block = ''
   src_ip_same_block = ''
   src_ip_reserved_r = '240.240.240.1'
@@ -29,12 +29,21 @@ if __name__ == '__main__':
   src_ip_local_mach = '127.0.0.1'
 
   try:
-    main(src_ip_diff_block, 10000)
+    forge_packet(src_ip_diff_block, 10000)
   except Exception as e:
     print(e)
 
-  time.sleep(1)
   try:
-    main(src_ip_local_mach, 12000)
+    forge_packet(src_ip_local_mach, 11000)
   except Exception as e:
     print(e)
+
+  try:
+    forge_packet(src_ip_reserved_r, 12000)
+  except Exception as e:
+    print(e)
+
+
+
+if __name__ == '__main__':
+    main()
