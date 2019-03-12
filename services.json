@@ -199,6 +199,8 @@
       "httpserver_8000",
       "mail",
       "seed",
+      "bitcoin",
+      "ethereum",
       "socks"
     ]
   },
